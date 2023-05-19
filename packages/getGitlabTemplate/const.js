@@ -1,4 +1,4 @@
-const GITLAB = 'https://git.example.com'
+const GITLAB = 'https://example.com'
 const token = 'your-token'
 const projectId = 3482
 module.exports = {

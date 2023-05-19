@@ -26,28 +26,35 @@ async function readFileFromGitlab (filePath) {
  * @param {String} path 需要读取的文件路径，不传则默认读取最外层
  * @param {String} filter 需要过滤的文件夹/文件名
  */
-const getTemplateFromGitLab = async (path = '', filter = []) => {
+const getTemplateFromGitLab = async (path = '', filter = [], targetDir) => {
   const fileList = await getFileListFromGitLab(path, filter)
+  if (!fs.existsSync(targetDir)) {
+    fs.mkdir(targetDir, () => {})
+  }
+
   fileList.forEach(async (item) => {
     // 文件，直接写入
     if (item.type !== 'tree') {
       const gitlabFilePath = path ? `${path}/${item.name}` : `${item.name}`
       const content = await readFileFromGitlab(gitlabFilePath)
-      const filePath = path ? `targetDir/${path}/${item.name}` : `targetDir/${item.name}`
-      fs.writeFile(filePath, content, err => {console.log(err)})
+      const filePath = path ? `${targetDir}/${path}/${item.name}` : `${targetDir}/${item.name}`
+      fs.writeFile(filePath, content, () => {})
     } else {
       // 文件夹，创建文件夹后递归调用
-      const targetDirPath = path ? `targetDir/${path}/${item.name}` : `targetDir/${item.name}`
-      fs.mkdir(targetDirPath, err => {console.log(err)})
+      const targetDirPath = path ? `${targetDir}/${path}/${item.name}` : `${targetDir}/${item.name}`
+      fs.mkdir(targetDirPath, err => {})
       const gitlabPath = path ? `${path}/${item.name}` : `${item.name}`
-      getTemplateFromGitLab(gitlabPath, filter)
+      getTemplateFromGitLab(gitlabPath, filter, targetDir)
     }
   })
 }
-getTemplateFromGitLab('', ['dist', 'views', 'api', 'router', 'components'])
+getTemplateFromGitLab('', ['dist', 'views', 'api', 'router', 'components'], 'targetDir')
 
 // 本地拷贝文件夹
 const readOriginToCurrent = (srcPath, targetPath, filter = []) => {
+  if (!fs.existsSync(targetPath)) {
+    fs.mkdir(targetPath, err => {})
+  }
   fs.readdir(srcPath, function(err, files) {
     if (err) {
       console.log(err)
