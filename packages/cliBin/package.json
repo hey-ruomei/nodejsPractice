@@ -1,0 +1,23 @@
+{
+  "name": "clibin",
+  "version": "1.0.0",
+  "description": "可执行文件命令测试",
+  "main": "index.js",
+  "bin": {
+    "myvue": "bin/myVue.js",
+    "myvue-create": "bin/myVue-create.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli",
+    "bin",
+    "node"
+  ],
+  "author": "zhongruomei",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^10.0.1"
+  }
+}
